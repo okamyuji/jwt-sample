@@ -1,12 +1,17 @@
 package com.example.security.controller.token;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.security.repository.user.UserRepository;
 import com.example.security.service.jwt.JwtService;
+import com.example.security.service.jwt.JwtService.JwtToken;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +30,14 @@ public class TokenRefreshController {
     private final JwtService jwtService;
 
     /**
-     * ユーザーリポジトリ
+     * JWTデコーダー
      */
-    private final UserRepository userRepository;
+    private final JwtDecoder jwtDecoder;
+
+    /**
+     * ユーザー詳細サービス
+     */
+    private final UserDetailsService userDetailsService;
 
     /**
      * トークンリフレッシュレスポンス
@@ -49,31 +59,29 @@ public class TokenRefreshController {
             HttpServletRequest request) {
         // Authorizationヘッダーからリフレッシュトークンを取得
         final String authHeader = request.getHeader("Authorization");
-        final String refreshToken;
-        final String userEmail;
-
+        
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.badRequest().build();
         }
 
-        refreshToken = authHeader.substring(7);
-        userEmail = jwtService.extractUsername(refreshToken);
-
-        if (userEmail != null) {
-            var user = userRepository.findByEmail(userEmail)
-                    .orElseThrow();
-
-            if (jwtService.isTokenValid(refreshToken, user)) {
-                var jwtToken = jwtService.generateToken(user);
-
-                return ResponseEntity.ok(
-                        new TokenRefreshResponse(
-                                jwtToken.token(),
-                                jwtToken.refreshToken() // 新しいリフレッシュトークンを返す
-                        ));
-            }
+        try {
+            // トークンの取得と検証
+            String refreshToken = authHeader.substring(7);
+            var jwt = jwtDecoder.decode(refreshToken);
+            
+            // サブジェクトからユーザー名を取得
+            String username = jwt.getSubject();
+            
+            // ユーザー情報の取得
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            
+            // 新しいトークンの生成
+            JwtToken jwtToken = jwtService.generateToken(userDetails);
+            
+            return ResponseEntity.ok(
+                    new TokenRefreshResponse(jwtToken.token(), refreshToken));
+        } catch (JwtException | BadCredentialsException e) {
+            return ResponseEntity.status(401).build();
         }
-
-        return ResponseEntity.badRequest().build();
     }
 }

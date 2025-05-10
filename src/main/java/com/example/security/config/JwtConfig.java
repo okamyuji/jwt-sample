@@ -1,28 +1,25 @@
 package com.example.security.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 import lombok.Data;
 
 /**
  * JWT設定
  */
+@Component
 @ConfigurationProperties(prefix = "jwt")
 @Data
 public class JwtConfig {
 
     /**
-     * シークレットキー
-     */
-    private String secret;
-
-    /**
-     * トークンの有効期限
+     * トークンの有効期限（ms）
      */
     private long expiration;
 
     /**
-     * リフレッシュトークンの有効期限
+     * リフレッシュトークンの有効期限（ms）
      */
     private long refreshExpiration;
 }

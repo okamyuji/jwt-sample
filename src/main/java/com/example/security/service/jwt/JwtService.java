@@ -1,19 +1,22 @@
 package com.example.security.service.jwt;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 import com.example.security.config.JwtConfig;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -23,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtService {
 
+    private final JwtEncoder jwtEncoder;
     private final JwtConfig jwtConfig;
 
     /**
@@ -32,135 +36,63 @@ public class JwtService {
     }
 
     /**
-     * トークンの抽出
-     * 
-     * @param token トークン
-     * @return ユーザー名
+     * 認証情報からトークンを生成
      */
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+    public JwtToken generateToken(Authentication authentication) {
+        return generateToken(authentication.getName(), 
+                             authentication.getAuthorities().stream()
+                                 .map(GrantedAuthority::getAuthority)
+                                 .collect(Collectors.toList()));
     }
 
     /**
-     * クレームの抽出
-     * 
-     * @param token          トークン
-     * @param claimsResolver クレーム抽出関数
-     * @return クレーム
-     */
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
-
-    /**
-     * トークンの生成
-     * 
-     * @param userDetails ユーザー詳細
-     * @return トークンレスポンス
+     * UserDetailsからトークンを生成
      */
     public JwtToken generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
+        return generateToken(userDetails.getUsername(), 
+                             userDetails.getAuthorities().stream()
+                                 .map(GrantedAuthority::getAuthority)
+                                 .collect(Collectors.toList()));
     }
 
     /**
-     * 追加のクレームを含むトークンを生成
-     * 
-     * @param extraClaims 追加のクレーム
-     * @param userDetails ユーザー詳細
-     * @return トークンレスポンス
+     * ユーザー名と権限リストからトークンを生成
      */
-    public JwtToken generateToken(
-            Map<String, Object> extraClaims,
-            UserDetails userDetails) {
+    public JwtToken generateToken(String username, Iterable<String> roles) {
+        // 現在の時刻
+        Instant now = Instant.now();
+        
+        // アクセストークンの有効期限
+        Instant accessTokenExpiry = now.plus(jwtConfig.getExpiration(), ChronoUnit.MILLIS);
+        
+        // リフレッシュトークンの有効期限
+        Instant refreshTokenExpiry = now.plus(jwtConfig.getRefreshExpiration(), ChronoUnit.MILLIS);
+        
+        // アクセストークンに含めるクレーム
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("roles", roles);
+        
         // アクセストークンの生成
-        String accessToken = buildToken(extraClaims, userDetails, jwtConfig.getExpiration());
-
-        // リフレッシュトークンの生成（通常は最小限のクレームを含む）
-        String refreshToken = buildToken(new HashMap<>(), userDetails, jwtConfig.getRefreshExpiration());
-
-        // トークンの有効期限
-        Date expiresAt = new Date(System.currentTimeMillis() + jwtConfig.getExpiration());
-
-        return new JwtToken(accessToken, refreshToken, expiresAt);
+        String accessToken = createToken(username, now, accessTokenExpiry, claims);
+        
+        // リフレッシュトークンの生成（権限情報は含めない）
+        String refreshToken = createToken(username, now, refreshTokenExpiry, new HashMap<>());
+        
+        return new JwtToken(accessToken, refreshToken, Date.from(accessTokenExpiry));
     }
-
+    
     /**
-     * トークンのビルド
-     * 
-     * @param extraClaims 追加のクレーム
-     * @param userDetails ユーザー詳細
-     * @param expiration  トークンの有効期限
-     * @return トークン
+     * トークンの生成
      */
-    private String buildToken(
-            Map<String, Object> extraClaims,
-            UserDetails userDetails,
-            long expiration) {
-        return Jwts
-                .builder()
-                .claims(extraClaims)
-                .subject(userDetails.getUsername())
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getSignInKey())
-                .compact();
-    }
-
-    /**
-     * トークンの有効性を確認
-     * 
-     * @param token       トークン
-     * @param userDetails ユーザー詳細
-     * @return トークンが有効かどうか
-     */
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
-    }
-
-    /**
-     * トークンの期限切れを確認
-     * 
-     * @param token トークン
-     * @return トークンが期限切れかどうか
-     */
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-    /**
-     * トークンの期限切れを抽出
-     * 
-     * @param token トークン
-     * @return トークンの期限切れ
-     */
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
-
-    /**
-     * トークンのクレームを抽出
-     * 
-     * @param token トークン
-     * @return トークンのクレーム
-     */
-    private Claims extractAllClaims(String token) {
-        return Jwts
-                .parser()
-                .verifyWith(getSignInKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
-    }
-
-    /**
-     * SignInKeyの取得
-     * 
-     * @return SignInKey
-     */
-    private javax.crypto.SecretKey getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(jwtConfig.getSecret());
-        return Keys.hmacShaKeyFor(keyBytes);
+    private String createToken(String subject, Instant issuedAt, Instant expiresAt, Map<String, Object> claims) {
+        JwtClaimsSet.Builder claimsBuilder = JwtClaimsSet.builder()
+                .subject(subject)
+                .issuedAt(issuedAt)
+                .expiresAt(expiresAt);
+        
+        // カスタムクレームの追加
+        claims.forEach(claimsBuilder::claim);
+        
+        return jwtEncoder.encode(JwtEncoderParameters.from(claimsBuilder.build())).getTokenValue();
     }
 }
