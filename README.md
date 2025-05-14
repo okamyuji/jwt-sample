@@ -40,7 +40,7 @@ Zennの記事 [Spring Boot 3でのJWT認証実装：Spring Security標準機能�
 
 ## テスト実行
 
-プロジェクトには以下のような包括的なテストが含まれています：
+プロジェクトには以下のような包括的なテストが含まれています
 
 ```bash
 # すべてのテストを実行
@@ -52,7 +52,7 @@ mvnw test -Dtest=UserRepositoryTest
 mvnw test -Dtest=JwtServiceTest
 ```
 
-テストカバレッジには以下が含まれます：
+テストカバレッジには以下が含まれます
 
 - モデル層テスト（UserTest, RoleTest）
 - リポジトリ層テスト（UserRepositoryTest）
