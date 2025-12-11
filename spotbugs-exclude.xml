@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!-- Lombok @RequiredArgsConstructor による final フィールドへの代入は安全 -->
+    <Match>
+        <Class name="com.example.security.config.SecurityConfig"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+    </Match>
+    <Match>
+        <Class name="com.example.security.service.jwt.JwtService"/>
+        <Bug pattern="EI_EXPOSE_REP2"/>
+        <Field name="jwtConfig"/>
+    </Match>
+</FindBugsFilter>
+
