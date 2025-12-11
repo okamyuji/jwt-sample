@@ -11,10 +11,9 @@ services:
       - JAVA_OPTS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom
       # Spring設定
       - SPRING_PROFILES_ACTIVE=docker
-      # JWT設定（本番環境では必ず安全な値に変更してください）
-      - JWT_SECRET=404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
     healthcheck:
-      test: ["CMD-SHELL", "nc -z localhost 8080 || exit 1"]
+      test:
+        ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3

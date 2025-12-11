@@ -24,8 +24,9 @@ RUN java -Djarmode=layertools -jar target/*.jar extract --destination extracted
 # ============================================
 FROM eclipse-temurin:21-jre-alpine AS runtime
 
-# セキュリティ: 非rootユーザーで実行
-RUN addgroup -g 1001 appgroup && \
+# セキュリティ: 非rootユーザーで実行 + curlインストール（ヘルスチェック用）
+RUN apk add --no-cache curl && \
+    addgroup -g 1001 appgroup && \
     adduser -u 1001 -G appgroup -D appuser
 
 WORKDIR /app
