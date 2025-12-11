@@ -1,7 +1,5 @@
 package com.example.security.service.auth;
 
-import java.util.Objects;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -64,15 +62,14 @@ public class AuthenticationService {
      * @return 認証レスポンス
      */
     public AuthenticationResponse register(RegisterRequest request) {
-        User user = Objects.requireNonNull(
-                User.builder()
-                        .firstname(request.firstname())
-                        .lastname(request.lastname())
-                        .email(request.email())
-                        .password(passwordEncoder.encode(request.password()))
-                        .role(Role.USER)
-                        .build());
-        User savedUser = Objects.requireNonNull(repository.save(user));
+        User user = User.builder()
+                .firstname(request.firstname())
+                .lastname(request.lastname())
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
+                .role(Role.USER)
+                .build();
+        User savedUser = repository.save(user);
 
         JwtToken jwtToken = jwtService.generateToken(savedUser);
 

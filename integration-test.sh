@@ -339,7 +339,7 @@ test_register_empty_body() {
     status_code=$(echo "$response" | tail -n1)
     
     # 空のボディの場合、200（バリデーションなし）または4xx/5xxエラー
-    if [[ "$status_code" =~ ^[245] ]]; then
+    if [[ "$status_code" =~ ^(2[0-9]{2}|4[0-9]{2}|5[0-9]{2})$ ]]; then
         log_success "POST /api/v1/auth/register (empty body) (HTTP $status_code)"
         ((PASSED++))
     else

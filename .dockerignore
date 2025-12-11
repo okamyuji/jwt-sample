@@ -1,6 +1,5 @@
 # ビルド成果物
 target/
-!target/*.jar
 
 # IDE設定
 .idea/
