@@ -1,0 +1,28 @@
+# ビルド成果物
+target/
+
+# IDE設定
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# Git
+.git/
+.gitignore
+
+# ドキュメント
+*.md
+LICENSE
+
+# カバレッジレポート（テストはビルド時にスキップするため、テストコードは除外しない）
+target/site/
+target/surefire-reports/
+
+# その他
+*.log
+*.tmp
+.DS_Store
+

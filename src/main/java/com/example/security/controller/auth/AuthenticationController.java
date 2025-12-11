@@ -28,7 +28,7 @@ public class AuthenticationController {
 
     /**
      * 新規登録
-     * 
+     *
      * @param request 登録リクエスト
      * @return 認証レスポンス
      */
@@ -40,7 +40,7 @@ public class AuthenticationController {
 
     /**
      * 認証
-     * 
+     *
      * @param request 認証リクエスト
      * @return 認証レスポンス
      */

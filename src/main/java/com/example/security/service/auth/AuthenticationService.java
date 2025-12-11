@@ -28,8 +28,8 @@ public class AuthenticationService {
 
     /**
      * 認証リクエスト
-     * 
-     * @param email メールアドレス
+     *
+     * @param email    メールアドレス
      * @param password パスワード
      */
     public record AuthenticationRequest(String email, String password) {
@@ -37,19 +37,19 @@ public class AuthenticationService {
 
     /**
      * 登録リクエスト
-     * 
+     *
      * @param firstname 名前
-     * @param lastname 姓
-     * @param email メールアドレス
-     * @param password パスワード
+     * @param lastname  姓
+     * @param email     メールアドレス
+     * @param password  パスワード
      */
     public record RegisterRequest(String firstname, String lastname, String email, String password) {
     }
 
     /**
      * 認証レスポンス
-     * 
-     * @param accessToken アクセストークン
+     *
+     * @param accessToken  アクセストークン
      * @param refreshToken リフレッシュトークン
      */
     public record AuthenticationResponse(String accessToken, String refreshToken) {
@@ -57,28 +57,29 @@ public class AuthenticationService {
 
     /**
      * 登録
-     * 
+     *
      * @param request 登録リクエスト
      * @return 認証レスポンス
      */
+    @SuppressWarnings("null")
     public AuthenticationResponse register(RegisterRequest request) {
-        var user = User.builder()
+        User user = User.builder()
                 .firstname(request.firstname())
                 .lastname(request.lastname())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
                 .role(Role.USER)
                 .build();
-        repository.save(user);
+        User savedUser = repository.save(user);
 
-        JwtToken jwtToken = jwtService.generateToken(user);
+        JwtToken jwtToken = jwtService.generateToken(savedUser);
 
         return new AuthenticationResponse(jwtToken.token(), jwtToken.refreshToken());
     }
 
     /**
      * 認証
-     * 
+     *
      * @param request 認証リクエスト
      * @return 認証レスポンス
      */
@@ -87,7 +88,7 @@ public class AuthenticationService {
                 new UsernamePasswordAuthenticationToken(
                         request.email(),
                         request.password()));
-        
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         JwtToken jwtToken = jwtService.generateToken(authentication);

@@ -17,4 +17,4 @@ import lombok.Data;
 public class JwtKeyProperties {
     private RSAPublicKey publicKey;
     private RSAPrivateKey privateKey;
-} 
+}

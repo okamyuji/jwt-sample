@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import com.example.security.model.Role;
 import com.example.security.model.User;
 
+@SuppressWarnings("null")
 @DataJpaTest
 class UserRepositoryTest {
 
@@ -33,7 +34,7 @@ class UserRepositoryTest {
                 .password("password")
                 .role(Role.USER)
                 .build();
-        
+
         entityManager.persist(user);
         entityManager.flush();
 
@@ -79,4 +80,4 @@ class UserRepositoryTest {
         assertEquals(user.getPassword(), retrievedUser.getPassword());
         assertEquals(user.getRole(), retrievedUser.getRole());
     }
-} 
+}

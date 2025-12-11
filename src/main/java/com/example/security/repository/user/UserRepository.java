@@ -13,7 +13,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     /**
      * メールアドレスでユーザーを検索
-     * 
+     *
      * @param email メールアドレス
      * @return ユーザー
      */

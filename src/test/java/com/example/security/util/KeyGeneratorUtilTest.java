@@ -17,21 +17,21 @@ class KeyGeneratorUtilTest {
     void generateRsaKey_shouldReturnValidKeyPair() throws Exception {
         // when
         KeyPair keyPair = KeyGeneratorUtil.generateRsaKey();
-        
+
         // then
         assertNotNull(keyPair);
         assertTrue(keyPair.getPublic() instanceof RSAPublicKey);
         assertTrue(keyPair.getPrivate() instanceof RSAPrivateKey);
     }
-    
+
     @Test
     void rsaKeyProperties_generate_shouldReturnValidProperties() {
         // when
         RsaKeyProperties properties = RsaKeyProperties.generate();
-        
+
         // then
         assertNotNull(properties);
         assertNotNull(properties.publicKey());
         assertNotNull(properties.privateKey());
     }
-} 
+}

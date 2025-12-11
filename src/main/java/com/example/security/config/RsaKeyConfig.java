@@ -13,19 +13,19 @@ public class RsaKeyConfig {
 
     /**
      * JWTの鍵プロパティ
-     * 
+     *
      * @return JWT鍵プロパティ
      */
     @Bean
     public JwtKeyProperties jwtKeyProperties() {
         // RSA鍵を生成
         RsaKeyProperties rsaKeys = RsaKeyProperties.generate();
-        
+
         // JWTキープロパティを設定
         JwtKeyProperties jwtKeyProperties = new JwtKeyProperties();
         jwtKeyProperties.setPublicKey(rsaKeys.publicKey());
         jwtKeyProperties.setPrivateKey(rsaKeys.privateKey());
-        
+
         return jwtKeyProperties;
     }
-} 
+}

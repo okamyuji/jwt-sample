@@ -28,6 +28,7 @@ import com.example.security.service.jwt.JwtService;
 import com.example.security.service.jwt.JwtService.JwtToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@SuppressWarnings("null")
 @ExtendWith(MockitoExtension.class)
 class TokenRefreshControllerTest {
 
@@ -121,4 +122,4 @@ class TokenRefreshControllerTest {
                 .header("Authorization", "Invalid"))
                 .andExpect(status().isBadRequest());
     }
-} 
+}

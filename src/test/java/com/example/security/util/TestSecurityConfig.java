@@ -37,12 +37,12 @@ public class TestSecurityConfig {
     public JwtEncoder testJwtEncoder(KeyPair keyPair) {
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-        
+
         JWK jwk = new RSAKey.Builder(publicKey)
                 .privateKey(privateKey)
                 .keyID(UUID.randomUUID().toString())
                 .build();
-        
+
         JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwkSource);
     }
@@ -53,4 +53,4 @@ public class TestSecurityConfig {
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         return NimbusJwtDecoder.withPublicKey(publicKey).build();
     }
-} 
+}

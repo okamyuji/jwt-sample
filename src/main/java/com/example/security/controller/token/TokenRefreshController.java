@@ -41,7 +41,7 @@ public class TokenRefreshController {
 
     /**
      * トークンリフレッシュレスポンス
-     * 
+     *
      * @param accessToken  アクセストークン
      * @param refreshToken リフレッシュトークン
      */
@@ -50,7 +50,7 @@ public class TokenRefreshController {
 
     /**
      * トークンリフレッシュ
-     * 
+     *
      * @param request リクエスト
      * @return トークンリフレッシュレスポンス
      */
@@ -59,7 +59,7 @@ public class TokenRefreshController {
             HttpServletRequest request) {
         // Authorizationヘッダーからリフレッシュトークンを取得
         final String authHeader = request.getHeader("Authorization");
-        
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.badRequest().build();
         }
@@ -68,16 +68,16 @@ public class TokenRefreshController {
             // トークンの取得と検証
             String refreshToken = authHeader.substring(7);
             var jwt = jwtDecoder.decode(refreshToken);
-            
+
             // サブジェクトからユーザー名を取得
             String username = jwt.getSubject();
-            
+
             // ユーザー情報の取得
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            
-            // 新しいトークンの生成
+
+            // 新しいアクセストークンの生成（リフレッシュトークンは再利用）
             JwtToken jwtToken = jwtService.generateToken(userDetails);
-            
+
             return ResponseEntity.ok(
                     new TokenRefreshResponse(jwtToken.token(), refreshToken));
         } catch (JwtException | BadCredentialsException e) {
