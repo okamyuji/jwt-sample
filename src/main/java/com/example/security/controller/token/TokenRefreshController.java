@@ -75,11 +75,11 @@ public class TokenRefreshController {
             // ユーザー情報の取得
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-            // 新しいトークンの生成
+            // 新しいアクセストークンの生成（リフレッシュトークンは再利用）
             JwtToken jwtToken = jwtService.generateToken(userDetails);
 
             return ResponseEntity.ok(
-                    new TokenRefreshResponse(jwtToken.token(), jwtToken.refreshToken()));
+                    new TokenRefreshResponse(jwtToken.token(), refreshToken));
         } catch (JwtException | BadCredentialsException e) {
             return ResponseEntity.status(401).build();
         }
