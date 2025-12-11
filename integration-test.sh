@@ -58,7 +58,7 @@ http_request() {
         curl_opts+=(-H "$headers")
     fi
     
-    curl "${curl_opts[@]}" "${BASE_URL}${endpoint}" 2>/dev/null || echo -e "\n000"
+    curl "${curl_opts[@]}" "${BASE_URL}${endpoint}" 2>/dev/null || printf "\n000"
 }
 
 # レスポンス解析
