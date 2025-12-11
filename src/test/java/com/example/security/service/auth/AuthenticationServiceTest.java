@@ -27,6 +27,7 @@ import com.example.security.service.auth.AuthenticationService.RegisterRequest;
 import com.example.security.service.jwt.JwtService;
 import com.example.security.service.jwt.JwtService.JwtToken;
 
+@SuppressWarnings("null")
 @ExtendWith(MockitoExtension.class)
 class AuthenticationServiceTest {
 
@@ -41,7 +42,7 @@ class AuthenticationServiceTest {
 
     @Mock
     private JwtService jwtService;
-    
+
     @Mock
     private Authentication authentication;
 
@@ -54,14 +55,14 @@ class AuthenticationServiceTest {
     private static final String TOKEN = "test.jwt.token";
     private static final String FIRSTNAME = "John";
     private static final String LASTNAME = "Doe";
-    
+
     private JwtToken jwtToken;
 
     @BeforeEach
     void setUp() {
         // パスワードエンコーダーのモック設定
         lenient().when(passwordEncoder.encode(anyString())).thenReturn(ENCODED_PASSWORD);
-        
+
         // JWTサービスのモック設定
         jwtToken = new JwtToken(TOKEN, TOKEN, null);
     }
@@ -70,7 +71,7 @@ class AuthenticationServiceTest {
     void register_shouldCreateUserAndReturnToken() {
         // given
         RegisterRequest request = new RegisterRequest(FIRSTNAME, LASTNAME, EMAIL, PASSWORD);
-        
+
         User savedUser = User.builder()
                 .firstname(FIRSTNAME)
                 .lastname(LASTNAME)
@@ -78,7 +79,7 @@ class AuthenticationServiceTest {
                 .password(ENCODED_PASSWORD)
                 .role(Role.USER)
                 .build();
-        
+
         when(repository.save(any(User.class))).thenReturn(savedUser);
         when(jwtService.generateToken(any(User.class))).thenReturn(jwtToken);
 
@@ -95,7 +96,7 @@ class AuthenticationServiceTest {
     void authenticate_shouldReturnTokenForValidCredentials() {
         // given
         AuthenticationRequest request = new AuthenticationRequest(EMAIL, PASSWORD);
-        
+
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
         when(jwtService.generateToken(any(Authentication.class))).thenReturn(jwtToken);
@@ -108,4 +109,4 @@ class AuthenticationServiceTest {
         assertEquals(TOKEN, response.accessToken());
         assertEquals(TOKEN, response.refreshToken());
     }
-} 
+}

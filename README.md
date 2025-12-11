@@ -34,9 +34,9 @@ Zennの記事 [Spring Boot 3でのJWT認証実装：Spring Security標準機能�
 1. リポジトリをクローン
 2. mvnw clean package でビルド
 3. mvnw spring-boot:run で実行
-4. http://localhost:8080/api/v1/auth/register でユーザー登録
-5. http://localhost:8080/api/v1/auth/authenticate で認証トークン取得
-6. Authorization: Bearer <token> ヘッダーを使用してAPIにアクセス
+4. `http://localhost:8080/api/v1/auth/register` でユーザー登録
+5. `http://localhost:8080/api/v1/auth/authenticate` で認証トークン取得
+6. `Authorization: Bearer <token>` ヘッダーを使用してAPIにアクセス
 
 ## テスト実行
 

@@ -1,5 +1,7 @@
 package com.example.security.service.auth;
 
+import java.util.Objects;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,7 +31,7 @@ public class AuthenticationService {
     /**
      * 認証リクエスト
      * 
-     * @param email メールアドレス
+     * @param email    メールアドレス
      * @param password パスワード
      */
     public record AuthenticationRequest(String email, String password) {
@@ -39,9 +41,9 @@ public class AuthenticationService {
      * 登録リクエスト
      * 
      * @param firstname 名前
-     * @param lastname 姓
-     * @param email メールアドレス
-     * @param password パスワード
+     * @param lastname  姓
+     * @param email     メールアドレス
+     * @param password  パスワード
      */
     public record RegisterRequest(String firstname, String lastname, String email, String password) {
     }
@@ -49,7 +51,7 @@ public class AuthenticationService {
     /**
      * 認証レスポンス
      * 
-     * @param accessToken アクセストークン
+     * @param accessToken  アクセストークン
      * @param refreshToken リフレッシュトークン
      */
     public record AuthenticationResponse(String accessToken, String refreshToken) {
@@ -62,16 +64,17 @@ public class AuthenticationService {
      * @return 認証レスポンス
      */
     public AuthenticationResponse register(RegisterRequest request) {
-        var user = User.builder()
-                .firstname(request.firstname())
-                .lastname(request.lastname())
-                .email(request.email())
-                .password(passwordEncoder.encode(request.password()))
-                .role(Role.USER)
-                .build();
-        repository.save(user);
+        User user = Objects.requireNonNull(
+                User.builder()
+                        .firstname(request.firstname())
+                        .lastname(request.lastname())
+                        .email(request.email())
+                        .password(passwordEncoder.encode(request.password()))
+                        .role(Role.USER)
+                        .build());
+        User savedUser = Objects.requireNonNull(repository.save(user));
 
-        JwtToken jwtToken = jwtService.generateToken(user);
+        JwtToken jwtToken = jwtService.generateToken(savedUser);
 
         return new AuthenticationResponse(jwtToken.token(), jwtToken.refreshToken());
     }
@@ -87,7 +90,7 @@ public class AuthenticationService {
                 new UsernamePasswordAuthenticationToken(
                         request.email(),
                         request.password()));
-        
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         JwtToken jwtToken = jwtService.generateToken(authentication);
