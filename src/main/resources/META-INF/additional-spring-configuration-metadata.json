@@ -11,11 +11,6 @@
       "description": "JWT refresh token expiration time in milliseconds."
     },
     {
-      "name": "jwt.secret",
-      "type": "java.lang.String",
-      "description": "JWT secret key (for symmetric encryption, not used with RSA)."
-    },
-    {
       "name": "management.endpoints.web.exposure.include",
       "type": "java.lang.String",
       "description": "Endpoints to expose (e.g. health,info)."
