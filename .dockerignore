@@ -17,8 +17,7 @@ target/
 *.md
 LICENSE
 
-# テストとカバレッジ
-**/test/
+# カバレッジレポート（テストはビルド時にスキップするため、テストコードは除外しない）
 target/site/
 target/surefire-reports/
 
