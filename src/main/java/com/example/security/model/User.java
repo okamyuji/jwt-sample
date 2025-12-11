@@ -29,6 +29,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "_user")
 public class User implements UserDetails {
 
+    private static final long serialVersionUID = 1L;
+
     /**
      * ID
      */

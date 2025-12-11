@@ -2,7 +2,6 @@ package com.example.security.service.jwt;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,27 +31,27 @@ public class JwtService {
     /**
      * トークンレスポンス
      */
-    public record JwtToken(String token, String refreshToken, Date expiresAt) {
+    public record JwtToken(String token, String refreshToken, Instant expiresAt) {
     }
 
     /**
      * 認証情報からトークンを生成
      */
     public JwtToken generateToken(Authentication authentication) {
-        return generateToken(authentication.getName(), 
-                             authentication.getAuthorities().stream()
-                                 .map(GrantedAuthority::getAuthority)
-                                 .collect(Collectors.toList()));
+        return generateToken(authentication.getName(),
+                authentication.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toList()));
     }
 
     /**
      * UserDetailsからトークンを生成
      */
     public JwtToken generateToken(UserDetails userDetails) {
-        return generateToken(userDetails.getUsername(), 
-                             userDetails.getAuthorities().stream()
-                                 .map(GrantedAuthority::getAuthority)
-                                 .collect(Collectors.toList()));
+        return generateToken(userDetails.getUsername(),
+                userDetails.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority)
+                        .collect(Collectors.toList()));
     }
 
     /**
@@ -61,26 +60,26 @@ public class JwtService {
     public JwtToken generateToken(String username, Iterable<String> roles) {
         // 現在の時刻
         Instant now = Instant.now();
-        
+
         // アクセストークンの有効期限
         Instant accessTokenExpiry = now.plus(jwtConfig.getExpiration(), ChronoUnit.MILLIS);
-        
+
         // リフレッシュトークンの有効期限
         Instant refreshTokenExpiry = now.plus(jwtConfig.getRefreshExpiration(), ChronoUnit.MILLIS);
-        
+
         // アクセストークンに含めるクレーム
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", roles);
-        
+
         // アクセストークンの生成
         String accessToken = createToken(username, now, accessTokenExpiry, claims);
-        
+
         // リフレッシュトークンの生成（権限情報は含めない）
         String refreshToken = createToken(username, now, refreshTokenExpiry, new HashMap<>());
-        
-        return new JwtToken(accessToken, refreshToken, Date.from(accessTokenExpiry));
+
+        return new JwtToken(accessToken, refreshToken, accessTokenExpiry);
     }
-    
+
     /**
      * トークンの生成
      */
@@ -89,10 +88,10 @@ public class JwtService {
                 .subject(subject)
                 .issuedAt(issuedAt)
                 .expiresAt(expiresAt);
-        
+
         // カスタムクレームの追加
         claims.forEach(claimsBuilder::claim);
-        
+
         return jwtEncoder.encode(JwtEncoderParameters.from(claimsBuilder.build())).getTokenValue();
     }
 }
