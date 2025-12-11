@@ -79,7 +79,7 @@ public class TokenRefreshController {
             JwtToken jwtToken = jwtService.generateToken(userDetails);
 
             return ResponseEntity.ok(
-                    new TokenRefreshResponse(jwtToken.token(), refreshToken));
+                    new TokenRefreshResponse(jwtToken.token(), jwtToken.refreshToken()));
         } catch (JwtException | BadCredentialsException e) {
             return ResponseEntity.status(401).build();
         }
