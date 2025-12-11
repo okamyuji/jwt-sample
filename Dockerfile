@@ -31,11 +31,11 @@ RUN apk add --no-cache curl && \
 
 WORKDIR /app
 
-# Spring Boot Layered JARの各レイヤーをコピー（キャッシュ効率化）
-COPY --from=builder /app/extracted/dependencies/ ./
-COPY --from=builder /app/extracted/spring-boot-loader/ ./
-COPY --from=builder /app/extracted/snapshot-dependencies/ ./
-COPY --from=builder /app/extracted/application/ ./
+# Spring Boot Layered JARの各レイヤーをコピー（キャッシュ効率化、所有権設定）
+COPY --from=builder --chown=appuser:appgroup /app/extracted/dependencies/ ./
+COPY --from=builder --chown=appuser:appgroup /app/extracted/spring-boot-loader/ ./
+COPY --from=builder --chown=appuser:appgroup /app/extracted/snapshot-dependencies/ ./
+COPY --from=builder --chown=appuser:appgroup /app/extracted/application/ ./
 
 # 非rootユーザーに切り替え
 USER appuser
