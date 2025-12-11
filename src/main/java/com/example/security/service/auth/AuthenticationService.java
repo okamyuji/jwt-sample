@@ -61,6 +61,7 @@ public class AuthenticationService {
      * @param request 登録リクエスト
      * @return 認証レスポンス
      */
+    @SuppressWarnings("null")
     public AuthenticationResponse register(RegisterRequest request) {
         User user = User.builder()
                 .firstname(request.firstname())
