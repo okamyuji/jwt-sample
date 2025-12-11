@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<ruleset name="JWT Sample Ruleset"
+    xmlns="http://pmd.sourceforge.net/ruleset/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://pmd.sourceforge.net/ruleset/2.0.0
+        https://pmd.sourceforge.io/ruleset_2_0_0.xsd">
+
+    <description>JWT Sample Application PMD Ruleset</description>
+
+    <!-- ベストプラクティス -->
+    <rule ref="category/java/bestpractices.xml">
+        <!-- Lombokとの互換性のため除外 -->
+        <exclude name="UnusedPrivateField"/>
+        <exclude name="UnusedPrivateMethod"/>
+        <!-- テストクラスでの使用を許可 -->
+        <exclude name="JUnitTestContainsTooManyAsserts"/>
+        <exclude name="JUnitAssertionsShouldIncludeMessage"/>
+        <exclude name="JUnitTestsShouldIncludeAssert"/>
+    </rule>
+
+    <!-- コードスタイル -->
+    <rule ref="category/java/codestyle.xml">
+        <!-- 短い変数名を許可 -->
+        <exclude name="ShortVariable"/>
+        <exclude name="ShortMethodName"/>
+        <exclude name="ShortClassName"/>
+        <!-- Lombokとの互換性 -->
+        <exclude name="AtLeastOneConstructor"/>
+        <!-- ローカル変数のfinal強制を無効化 -->
+        <exclude name="LocalVariableCouldBeFinal"/>
+        <exclude name="MethodArgumentCouldBeFinal"/>
+        <!-- 長い変数名を許可 -->
+        <exclude name="LongVariable"/>
+        <!-- コメント強制を無効化 -->
+        <exclude name="CommentDefaultAccessModifier"/>
+        <!-- On demand importを許可 -->
+        <exclude name="UnnecessaryFullyQualifiedName"/>
+        <!-- staticインポート許可 -->
+        <exclude name="TooManyStaticImports"/>
+        <!-- 継承チェーン許可 -->
+        <exclude name="OnlyOneReturn"/>
+        <!-- クラス名チェック緩和 -->
+        <exclude name="ClassNamingConventions"/>
+        <!-- ジェネリクス許可 -->
+        <exclude name="GenericsNaming"/>
+    </rule>
+
+    <!-- 設計 -->
+    <rule ref="category/java/design.xml">
+        <!-- 依存性注入パターンを許可 -->
+        <exclude name="LawOfDemeter"/>
+        <!-- データクラスを許可 -->
+        <exclude name="DataClass"/>
+        <!-- 過度な結合チェックを緩和 -->
+        <exclude name="CouplingBetweenObjects"/>
+        <exclude name="ExcessiveImports"/>
+        <!-- 抽象化チェックを緩和 -->
+        <exclude name="AbstractClassWithoutAbstractMethod"/>
+        <exclude name="UseUtilityClass"/>
+        <!-- 認知的複雑度を緩和 -->
+        <exclude name="CognitiveComplexity"/>
+        <!-- 過度なパブリックカウントを緩和 -->
+        <exclude name="ExcessivePublicCount"/>
+        <exclude name="TooManyMethods"/>
+        <exclude name="TooManyFields"/>
+        <!-- 不変オブジェクトを緩和 -->
+        <exclude name="ImmutableField"/>
+        <!-- アバルトマン -->
+        <exclude name="AvoidCatchingGenericException"/>
+        <exclude name="SignatureDeclareThrowsException"/>
+    </rule>
+
+    <!-- ドキュメント -->
+    <rule ref="category/java/documentation.xml">
+        <!-- コメント強制を無効化 -->
+        <exclude name="CommentRequired"/>
+        <exclude name="CommentSize"/>
+    </rule>
+
+    <!-- エラー発生しやすいコード -->
+    <rule ref="category/java/errorprone.xml">
+        <!-- BeanMembersShouldSerializeを無効化（Lombok対応） -->
+        <exclude name="BeanMembersShouldSerialize"/>
+        <!-- nullチェックを緩和 -->
+        <exclude name="NullAssignment"/>
+        <!-- データフロー異常を緩和 -->
+        <exclude name="DataflowAnomalyAnalysis"/>
+        <!-- 空のcatchブロック許可（テスト用） -->
+        <exclude name="EmptyCatchBlock"/>
+        <!-- Avoid literals -->
+        <exclude name="AvoidLiteralsInIfCondition"/>
+        <!-- 一意でない参照の変更を許可 -->
+        <exclude name="MissingSerialVersionUID"/>
+    </rule>
+
+    <!-- パフォーマンス -->
+    <rule ref="category/java/performance.xml"/>
+
+    <!-- セキュリティ -->
+    <rule ref="category/java/security.xml"/>
+
+</ruleset>
