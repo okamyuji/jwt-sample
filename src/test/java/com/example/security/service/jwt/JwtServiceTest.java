@@ -50,7 +50,7 @@ class JwtServiceTest {
     @BeforeEach
     void setUp() {
         when(jwtConfig.getExpiration()).thenReturn(EXPIRATION);
-        
+
         // jwtEncoderのモック設定
         Jwt jwt = Jwt.withTokenValue(TOKEN)
                 .header("alg", "RS256")
@@ -90,4 +90,4 @@ class JwtServiceTest {
         assertEquals(TOKEN, result.token());
         assertNotNull(result.expiresAt());
     }
-} 
+}

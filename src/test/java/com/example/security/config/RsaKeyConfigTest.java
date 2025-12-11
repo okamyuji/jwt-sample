@@ -17,10 +17,10 @@ class RsaKeyConfigTest {
     void jwtKeyProperties_shouldReturnValidProperties() {
         // when
         JwtKeyProperties properties = rsaKeyConfig.jwtKeyProperties();
-        
+
         // then
         assertNotNull(properties);
         assertNotNull(properties.getPublicKey());
         assertNotNull(properties.getPrivateKey());
     }
-} 
+}

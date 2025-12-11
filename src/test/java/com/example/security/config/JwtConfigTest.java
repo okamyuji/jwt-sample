@@ -19,7 +19,7 @@ class JwtConfigTest {
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(TestConfiguration.class))
             .withPropertyValues(
-                "jwt.expiration=3600000", 
+                "jwt.expiration=3600000",
                 "jwt.refresh-expiration=86400000");
 
     @Test
@@ -27,10 +27,10 @@ class JwtConfigTest {
         this.contextRunner
             .run(context -> {
                 JwtConfig jwtConfig = context.getBean(JwtConfig.class);
-                
+
                 assertNotNull(jwtConfig);
                 assertEquals(3600000, jwtConfig.getExpiration());
                 assertEquals(86400000, jwtConfig.getRefreshExpiration());
             });
     }
-} 
+}

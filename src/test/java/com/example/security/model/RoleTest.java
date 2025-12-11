@@ -20,11 +20,11 @@ class RoleTest {
         assertEquals(Role.USER, Role.valueOf("USER"));
         assertEquals(Role.ADMIN, Role.valueOf("ADMIN"));
     }
-    
+
     @Test
     void ordinal_shouldHaveCorrectOrder() {
         // when, then
         assertEquals(0, Role.USER.ordinal());
         assertEquals(1, Role.ADMIN.ordinal());
     }
-} 
+}

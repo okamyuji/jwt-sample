@@ -30,7 +30,7 @@ public class AuthenticationService {
 
     /**
      * 認証リクエスト
-     * 
+     *
      * @param email    メールアドレス
      * @param password パスワード
      */
@@ -39,7 +39,7 @@ public class AuthenticationService {
 
     /**
      * 登録リクエスト
-     * 
+     *
      * @param firstname 名前
      * @param lastname  姓
      * @param email     メールアドレス
@@ -50,7 +50,7 @@ public class AuthenticationService {
 
     /**
      * 認証レスポンス
-     * 
+     *
      * @param accessToken  アクセストークン
      * @param refreshToken リフレッシュトークン
      */
@@ -59,7 +59,7 @@ public class AuthenticationService {
 
     /**
      * 登録
-     * 
+     *
      * @param request 登録リクエスト
      * @return 認証レスポンス
      */
@@ -81,7 +81,7 @@ public class AuthenticationService {
 
     /**
      * 認証
-     * 
+     *
      * @param request 認証リクエスト
      * @return 認証レスポンス
      */

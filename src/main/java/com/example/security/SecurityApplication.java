@@ -15,7 +15,7 @@ public class SecurityApplication {
 
     /**
      * メインメソッド
-     * 
+     *
      * @param args 引数
      */
     public static void main(String[] args) {

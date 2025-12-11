@@ -103,4 +103,4 @@ class UserTest {
         // when, then
         assertTrue(user.isEnabled());
     }
-} 
+}
