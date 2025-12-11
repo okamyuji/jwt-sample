@@ -65,7 +65,7 @@
         <exclude name="TooManyFields"/>
         <!-- 不変オブジェクトを緩和 -->
         <exclude name="ImmutableField"/>
-        <!-- アバルトマン -->
+        <!-- 例外処理の緩和（汎用例外のcatchやthrowsを許可） -->
         <exclude name="AvoidCatchingGenericException"/>
         <exclude name="SignatureDeclareThrowsException"/>
     </rule>
