@@ -318,12 +318,12 @@ test_refresh_token_invalid_token() {
     local status_code
     status_code=$(echo "$response" | tail -n1)
     
-    # 無効なトークンは400, 401, 403, 500のいずれかのエラー
-    if [[ "$status_code" =~ ^(400|401|403|500)$ ]]; then
+    # 無効なトークンは401（認証エラー）が期待される
+    if [[ "$status_code" == "401" ]]; then
         log_success "POST /api/v1/auth/refresh-token (invalid token) (HTTP $status_code)"
         ((PASSED++))
     else
-        log_error "POST /api/v1/auth/refresh-token (invalid token) - Expected: 400/401/403/500, Got: $status_code"
+        log_error "POST /api/v1/auth/refresh-token (invalid token) - Expected: 401, Got: $status_code"
         ((FAILED++))
     fi
 }
@@ -338,12 +338,12 @@ test_register_empty_body() {
     local status_code
     status_code=$(echo "$response" | tail -n1)
     
-    # 空のボディの場合、200（バリデーションなし）または4xx/5xxエラー
-    if [[ "$status_code" =~ ^(2[0-9]{2}|4[0-9]{2}|5[0-9]{2})$ ]]; then
+    # 空のボディの場合、400または401（バリデーションエラー or 認証エラー）が期待される
+    if [[ "$status_code" =~ ^(400|401)$ ]]; then
         log_success "POST /api/v1/auth/register (empty body) (HTTP $status_code)"
         ((PASSED++))
     else
-        log_error "POST /api/v1/auth/register (empty body) - Unexpected: $status_code"
+        log_error "POST /api/v1/auth/register (empty body) - Expected: 400 or 401, Got: $status_code"
         ((FAILED++))
     fi
 }
